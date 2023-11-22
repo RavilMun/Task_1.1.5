@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static final UserDaoJDBCImpl INSTANCE = new UserDaoJDBCImpl();
     private static final String CREATE_TABLE = """
             CREATE TABLE IF NOT EXISTS user (
                 id SERIAL PRIMARY KEY ,
@@ -40,12 +39,9 @@ public class UserDaoJDBCImpl implements UserDao {
             TRUNCATE user
             """;
 
-    private UserDaoJDBCImpl() {
+    public UserDaoJDBCImpl() {
     }
 
-    public static UserDaoJDBCImpl getInstance() {
-        return INSTANCE;
-    }
 
     public void createUsersTable() {
         try (Connection connection = Util.getConnection();
