@@ -3,14 +3,14 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-
-    private final SessionFactory sessionFactory = Util.getSessionFactory();
 
     private static final String CREATE_TABLE = """
             CREATE TABLE IF NOT EXISTS user (
@@ -100,22 +100,16 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         List<User> userList;
-        Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
             Query<User> query = session.createQuery("FROM User", User.class);
             userList = query.list();
-            transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             throw new RuntimeException();
         }
         for (User user : userList) {
             System.out.println(user);
         }
-        return userList;
+        return userList != null ? userList : Collections.emptyList();
     }
 
     @Override
